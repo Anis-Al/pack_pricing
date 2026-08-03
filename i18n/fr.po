@@ -1,0 +1,216 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* pack_pricing
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e-20260724\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-03 15:21+0000\n"
+"PO-Revision-Date: 2026-08-03 15:21+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_product__pack_price_auto
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__pack_price_auto
+msgid "Auto Pack Pricing"
+msgstr "Tarification automatique du pack"
+
+#. module: pack_pricing
+#. odoo-python
+#: code:addons/pack_pricing/models/product_template.py:0
+msgid "Auto Pack Pricing only applies to pack products."
+msgstr ""
+"La tarification automatique du pack ne s'applique qu'aux articles de type "
+"pack."
+
+#. module: pack_pricing
+#: model_terms:ir.ui.view,arch_db:pack_pricing.product_template_only_form_view
+msgid "Before Discount"
+msgstr "Avant remise"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_product__pack_total_cost
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__pack_total_cost
+msgid "Components Cost"
+msgstr "Coût des composants"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_product__pack_total_sale
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__pack_total_sale
+msgid "Components Sales Price"
+msgstr "Prix de vente des composants"
+
+#. module: pack_pricing
+#: model:ir.model.fields,help:pack_pricing.field_product_product__pack_price_auto
+#: model:ir.model.fields,help:pack_pricing.field_product_template__pack_price_auto
+msgid ""
+"Compute this pack's cost and sales price from its components, publish its "
+"discount in the Packs pricelist, and sell it as a single order line "
+"(components are never added to the order)."
+msgstr ""
+"Calculer le coût et le prix de vente de ce pack à partir de ses composants, "
+"publier sa remise dans la liste de prix Packs, et le vendre sur une seule "
+"ligne de commande (les composants ne sont jamais ajoutés à la commande)."
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_pack_line__cost_price
+#: model_terms:ir.ui.view,arch_db:pack_pricing.product_pack_line_tree
+msgid "Cost"
+msgstr "Coût"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_pack_line__subtotal_cost
+msgid "Cost Subtotal"
+msgstr "Sous-total du coût"
+
+#. module: pack_pricing
+#: model:ir.model.fields,help:pack_pricing.field_product_product__pack_discount
+#: model:ir.model.fields,help:pack_pricing.field_product_template__pack_discount
+msgid "Discount published as a pricelist item in the Packs pricelist."
+msgstr "Remise publiée en tant que règle de la liste de prix Packs."
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_pack_line__display_name
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__display_name
+#: model:ir.model.fields,field_description:pack_pricing.field_sale_order_line__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_pack_line__id
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__id
+#: model:ir.model.fields,field_description:pack_pricing.field_sale_order_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_pack_line__margin
+#: model_terms:ir.ui.view,arch_db:pack_pricing.product_pack_line_tree
+#: model_terms:ir.ui.view,arch_db:pack_pricing.product_template_only_form_view
+msgid "Margin"
+msgstr "Marge"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_pack_line__margin_percent
+msgid "Margin (%)"
+msgstr "Marge (%)"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_product__pack_margin_after_discount
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__pack_margin_after_discount
+msgid "Margin After Discount"
+msgstr "Marge après remise"
+
+#. module: pack_pricing
+#: model:ir.model.fields,help:pack_pricing.field_product_product__pack_margin_after_discount
+#: model:ir.model.fields,help:pack_pricing.field_product_template__pack_margin_after_discount
+msgid "Margin left once the pack discount is applied."
+msgstr "Marge restante une fois la remise du pack appliquée."
+
+#. module: pack_pricing
+#: model_terms:ir.ui.view,arch_db:pack_pricing.product_template_only_form_view
+msgid "Pack Discount"
+msgstr "Remise du pack"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_product__pack_discount
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__pack_discount
+msgid "Pack Discount (%)"
+msgstr "Remise du pack (%)"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_product__pack_margin
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__pack_margin
+msgid "Pack Margin"
+msgstr "Marge du pack"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_product__pack_margin_percent
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__pack_margin_percent
+msgid "Pack Margin (%)"
+msgstr "Marge du pack (%)"
+
+#. module: pack_pricing
+#: model:product.pricelist,name:pack_pricing.pricelist_packs
+msgid "Packs"
+msgstr "Packs"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_product__pack_price_final
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__pack_price_final
+msgid "Price After Discount"
+msgstr "Prix après remise"
+
+#. module: pack_pricing
+#: model:ir.model,name:pack_pricing.model_product_template
+msgid "Product"
+msgstr "Produit"
+
+#. module: pack_pricing
+#: model:ir.model,name:pack_pricing.model_product_pack_line
+msgid "Product pack line"
+msgstr "Ligne de pack d'articles"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_pack_line__sale_price
+msgid "Sale Price"
+msgstr "Prix de vente"
+
+#. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_pack_line__subtotal_sale
+msgid "Sale Subtotal"
+msgstr "Sous-total de vente"
+
+#. module: pack_pricing
+#: model:ir.model,name:pack_pricing.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Ligne de commande"
+
+#. module: pack_pricing
+#: model_terms:ir.ui.view,arch_db:pack_pricing.product_pack_line_tree
+msgid "Sales Price"
+msgstr "Prix de vente"
+
+#. module: pack_pricing
+#: model_terms:ir.ui.view,arch_db:pack_pricing.product_template_only_form_view
+msgid ""
+"Saving publishes this discount as a pricelist item in the\n"
+"                            <b>Packs</b> pricelist, and copies the totals above onto the\n"
+"                            product's sales price and cost."
+msgstr ""
+"L'enregistrement publie cette remise en tant que règle de la liste de prix\n"
+"                            <b>Packs</b>, et copie les totaux ci-dessus dans le prix de\n"
+"                            vente et le coût de l'article."
+
+#. module: pack_pricing
+#. odoo-python
+#: code:addons/pack_pricing/models/product_template.py:0
+msgid "The pack discount must be between 0% (included) and 100% (excluded)."
+msgstr "La remise du pack doit être comprise entre 0% (inclus) et 100% (exclu)."
+
+#. module: pack_pricing
+#: model:ir.model.fields,help:pack_pricing.field_product_pack_line__sale_price
+msgid ""
+"The sale price is managed from the product template. Click on the 'Configure"
+" Variants' button to set the extra attribute prices."
+msgstr ""
+"Le prix de vente est géré depuis le modèle d'article. Cliquez sur le bouton "
+"'Configurer les variantes' pour définir les prix supplémentaires des "
+"attributs."
+
+#. module: pack_pricing
+#: model:ir.model.fields,help:pack_pricing.field_product_pack_line__cost_price
+msgid ""
+"Value of the product (automatically computed in AVCO).\n"
+"        Used to value the product when the purchase cost is not known (e.g. inventory adjustment).\n"
+"        Used to compute margins on sale orders."
+msgstr ""
+"Valeur de l'article (calculée automatiquement en CMP).\n"
+"        Utilisée pour valoriser l'article lorsque le coût d'achat n'est pas connu (par ex. ajustement d'inventaire).\n"
+"        Utilisée pour calculer les marges sur les commandes de vente."

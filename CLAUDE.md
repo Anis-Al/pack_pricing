@@ -39,7 +39,19 @@ If a pack discount "doesn't apply", check `pack_price_auto` first: with the flag
 | `models/sale_order_line.py` | suppresses `expand_pack_line` for auto packs |
 | `data/product_pricelist_data.xml` | the Packs pricelist, `noupdate`, bound to `website.default_website` |
 | `views/product_pack_line_views.xml` | price/margin columns, inherits the `sale_product_pack` views (not `product_pack`'s — `sale_discount` must already be there) |
-| `views/product_template_views.xml` | totals + discount groups in the Pack tab; `list_price`/`standard_price` readonly when auto |
+| `views/product_template_views.xml` | margin + discount groups in the Pack tab; `list_price`/`standard_price` readonly when auto |
+
+## Pack tab layout
+
+The component list already sums `subtotal_cost`, `subtotal_sale` and `margin`, so the two
+groups under it must not repeat those numbers. Left group ("Margin") shows `pack_margin`
+and `pack_margin_after_discount` (both money), right group shows `pack_discount` and
+`pack_price_final`. `pack_total_cost`, `pack_total_sale` and `pack_margin_percent` still
+compute — the sync and the tests read them — but no view renders them.
+
+`pack_margin_after_discount` = `pack_price_final - pack_total_cost`. The discount comes off
+revenue, never off cost, so it burns margin faster than its own percentage: 10% off 700
+costs 70 of 350 margin.
 
 ## Sync
 
@@ -96,5 +108,5 @@ odoo -d YOURDB -i pack_pricing --test-enable --test-tags /pack_pricing --stop-af
 ```
 
 `tests/test_pack_pricing.py` is the reference scenario: component B costs 100 / sells 200,
-component C costs 50 / sells 100, pack = 2×B + 3×C → cost 350, sale 700, margin 50%,
-discount 10% → 630 on the Packs pricelist, one order line.
+component C costs 50 / sells 100, pack = 2×B + 3×C → cost 350, sale 700, margin 350 (50%),
+discount 10% → 630 on the Packs pricelist, margin after discount 280, one order line.

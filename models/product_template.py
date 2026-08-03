@@ -31,6 +31,12 @@ class ProductTemplate(models.Model):
         compute="_compute_pack_totals",
         string="Pack Margin (%)",
     )
+    pack_margin_after_discount = fields.Float(
+        compute="_compute_pack_totals",
+        string="Margin After Discount",
+        digits="Product Price",
+        help="Margin left once the pack discount is applied.",
+    )
     pack_discount = fields.Float(
         "Pack Discount (%)",
         digits="Discount",
@@ -59,6 +65,9 @@ class ProductTemplate(models.Model):
             )
             tmpl.pack_price_final = tmpl.pack_total_sale * (
                 1 - tmpl.pack_discount / 100.0
+            )
+            tmpl.pack_margin_after_discount = (
+                tmpl.pack_price_final - tmpl.pack_total_cost
             )
 
     @api.constrains("pack_price_auto", "pack_ok")

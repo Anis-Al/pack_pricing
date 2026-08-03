@@ -10,11 +10,11 @@
             </field>
             <field name="pack_line_ids" position="after">
                 <group colspan="4" col="4">
-                    <group string="Pack Totals">
-                        <field name="pack_total_cost" />
-                        <field name="pack_total_sale" />
-                        <field name="pack_margin" />
-                        <field name="pack_margin_percent" />
+                    <!-- ponytail: cost/sale/margin totals are already summed by the
+                         list above; only show what the columns can't. -->
+                    <group string="Margin" invisible="not pack_discount">
+                        <field name="pack_margin" string="Before Discount" />
+                        <field name="pack_margin_after_discount" />
                     </group>
                     <group string="Pack Discount">
                         <field name="pack_discount" />
