@@ -12,11 +12,16 @@
                 <group colspan="4" col="4">
                     <!-- ponytail: cost/sale/margin totals are already summed by the
                          list above; only show what the columns can't. -->
-                    <group string="Margin" invisible="not pack_discount">
+                    <group string="Margin">
                         <field name="pack_margin" string="Before Discount" />
-                        <field name="pack_margin_after_discount" />
+                        <field
+                            name="pack_margin_after_discount"
+                            invisible="not pack_discount"
+                        />
                     </group>
-                    <group string="Pack Discount">
+                    <!-- ponytail: bootstrap alert classes are already in the backend
+                         assets, no custom scss for one highlighted group. -->
+                    <group string="Pack Discount" class="alert alert-info">
                         <field name="pack_discount" />
                         <field name="pack_price_final" />
                         <p

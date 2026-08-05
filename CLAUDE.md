@@ -49,6 +49,10 @@ and `pack_margin_after_discount` (both money), right group shows `pack_discount`
 `pack_price_final`. `pack_total_cost`, `pack_total_sale` and `pack_margin_percent` still
 compute — the sync and the tests read them — but no view renders them.
 
+Both groups stay visible; only `pack_margin_after_discount` hides at `pack_discount = 0`
+(hiding the whole Margin group made the tab jump on every discount edit). The discount
+group carries `class="alert alert-info"` — backend bootstrap, no module scss.
+
 `pack_margin_after_discount` = `pack_price_final - pack_total_cost`. The discount comes off
 revenue, never off cost, so it burns margin faster than its own percentage: 10% off 700
 costs 70 of 350 margin.
