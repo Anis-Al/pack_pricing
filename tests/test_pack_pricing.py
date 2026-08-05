@@ -108,6 +108,19 @@ class TestPackPricing(TransactionCase):
         self.template.pack_price_auto = False
         self.assertFalse(item.exists())
 
+    def test_disabling_pack_ok_removes_item(self):
+        self.template.pack_discount = 10.0
+        item = self.env["product.pricelist.item"].search(
+            [
+                ("pricelist_id", "=", self.packs_pricelist.id),
+                ("product_tmpl_id", "=", self.template.id),
+            ]
+        )
+        self.assertTrue(item)
+        self.template.pack_ok = False
+        self.assertFalse(self.template.pack_price_auto)
+        self.assertFalse(item.exists())
+
     def test_discount_out_of_range_rejected(self):
         with self.assertRaises(ValidationError):
             self.template.pack_discount = 120.0

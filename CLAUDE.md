@@ -71,6 +71,9 @@ Pricelist item state is derived from `_pack_effective_discount()`, which returns
 off. `write` calls `_sync_pack_pricelist_item()` directly when those keys are in vals,
 because `_sync_pack_prices` filters them out by then.
 
+Writing `pack_ok = False` also forces `pack_price_auto = False` in the same vals. Without
+that the `_check_pack_price_auto` constraint aborts the save and the pricelist item stays.
+
 ## Invariants — break these and something silently rots
 
 - A pack with **no** components is skipped by the sync. Otherwise ticking the flag on an

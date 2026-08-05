@@ -5,7 +5,7 @@
     "category": "Sales",
     "summary": "Cost/sale/margin roll-up on pack products, pack discount as a "
     "Packs pricelist item, single-line packs on the website",
-    "author": "Custom",
+    "author": "Anis Alim",
     "license": "AGPL-3",
     "depends": ["sale_product_pack", "website_sale"],
     "data": [

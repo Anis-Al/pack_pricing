@@ -174,6 +174,10 @@ class ProductTemplate(models.Model):
         return templates
 
     def write(self, vals):
+        if vals.get("pack_ok") is False:
+            # Unticking "Is a Pack" leaves nothing to roll up: drop auto pricing
+            # with it instead of failing the constraint and rolling the save back.
+            vals = dict(vals, pack_price_auto=False)
         res = super().write(vals)
         if self.env.context.get("pack_price_sync"):
             return res
