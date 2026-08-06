@@ -7,21 +7,40 @@
         <field name="arch" type="xml">
             <field name="pack_modifiable" position="after">
                 <field name="pack_price_auto" />
+                <field name="discount" />
+            </field>
+            <!-- Always non detailed: components never reach the order anyway. -->
+            <field name="pack_type" position="attributes">
+                <attribute name="invisible">1</attribute>
+                <attribute name="required">0</attribute>
             </field>
             <field name="pack_line_ids" position="after">
-                <group colspan="4" col="4">
+                <group colspan="4" col="4" invisible="not discount">
                     <!-- ponytail: cost/sale/margin totals are already summed by the
                          list above; only show what the columns can't. -->
                     <group string="Margin">
-                        <field name="pack_margin" string="Before Discount" />
-                        <field
-                            name="pack_margin_after_discount"
+                        <label for="pack_margin" string="Before Discount" />
+                        <div class="o_row">
+                            <field name="pack_margin" />
+                            <span class="text-muted" style="font-size: 0.7em">
+                                <field name="pack_margin_percent" />%</span>
+                        </div>
+                        <label
+                            for="pack_margin_after_discount"
                             invisible="not pack_discount"
                         />
+                        <div class="o_row" invisible="not pack_discount">
+                            <field name="pack_margin_after_discount" />
+                            <span class="text-muted" style="font-size: 0.7em">
+                                <field
+                                    name="pack_margin_percent_after_discount"
+                                />%</span>
+                        </div>
                     </group>
                     <!-- ponytail: bootstrap alert classes are already in the backend
                          assets, no custom scss for one highlighted group. -->
                     <group string="Pack Discount" class="alert alert-info">
+                        <field name="pack_price_before_discount" />
                         <field name="pack_discount" />
                         <field name="pack_price_final" />
                         <p

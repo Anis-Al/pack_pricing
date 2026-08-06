@@ -16,6 +16,12 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_product__discount
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__discount
+msgid "Apply Pack Discount"
+msgstr "Appliquer une remise"
+
+#. module: pack_pricing
 #: model:ir.model.fields,field_description:pack_pricing.field_product_product__pack_price_auto
 #: model:ir.model.fields,field_description:pack_pricing.field_product_template__pack_price_auto
 msgid "Auto Pack Pricing"
@@ -105,6 +111,12 @@ msgid "Margin After Discount"
 msgstr "Marge après remise"
 
 #. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_product__pack_margin_percent_after_discount
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__pack_margin_percent_after_discount
+msgid "Margin After Discount (%)"
+msgstr "Marge après remise (%)"
+
+#. module: pack_pricing
 #: model:ir.model.fields,help:pack_pricing.field_product_product__pack_margin_after_discount
 #: model:ir.model.fields,help:pack_pricing.field_product_template__pack_margin_after_discount
 msgid "Margin left once the pack discount is applied."
@@ -145,14 +157,40 @@ msgid "Price After Discount"
 msgstr "Prix après remise"
 
 #. module: pack_pricing
+#: model:ir.model.fields,field_description:pack_pricing.field_product_product__pack_price_before_discount
+#: model:ir.model.fields,field_description:pack_pricing.field_product_template__pack_price_before_discount
+msgid "Price Before Discount"
+msgstr "Prix avant remise"
+
+#. module: pack_pricing
 #: model:ir.model,name:pack_pricing.model_product_template
 msgid "Product"
 msgstr "Produit"
 
 #. module: pack_pricing
+#: model:ir.model.fields,help:pack_pricing.field_product_product__pack_price_before_discount
+#: model:ir.model.fields,help:pack_pricing.field_product_template__pack_price_before_discount
+msgid ""
+"What the pack discount is taken off: the component roll-up when auto pricing "
+"is on, the product's own sales price when it is off."
+msgstr ""
+"Ce sur quoi la remise du pack est appliquée : le total des composants quand "
+"la tarification automatique est active, le prix de vente de l'article sinon."
+
+#. module: pack_pricing
 #: model:ir.model,name:pack_pricing.model_product_pack_line
 msgid "Product pack line"
 msgstr "Ligne de pack d'articles"
+
+#. module: pack_pricing
+#: model:ir.model.fields,help:pack_pricing.field_product_product__discount
+#: model:ir.model.fields,help:pack_pricing.field_product_template__discount
+msgid ""
+"Publish a discount for this pack in the Packs pricelist. Unticking it clears "
+"the discount and removes the pricelist item."
+msgstr ""
+"Publier une remise pour ce pack dans la liste de prix Packs. La décocher "
+"remet la remise à zéro et supprime la règle de liste de prix."
 
 #. module: pack_pricing
 #: model:ir.model.fields,field_description:pack_pricing.field_product_pack_line__sale_price

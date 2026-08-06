@@ -6,12 +6,13 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     def expand_pack_line(self, write=False):
-        """Auto priced packs are sold as one line, components are never added.
+        """Packs we price ourselves are sold as one line, components never added.
 
         The pack carries the whole price on its own line (see
-        ``pack_price_auto``), so expanding it would double the amount and
-        clutter the cart, the delivery and the invoice.
+        ``product.template._pack_priced_as_plain_product``), so expanding it
+        would double the amount and clutter the cart, the delivery and the
+        invoice.
         """
-        if self.product_id.product_tmpl_id.pack_price_auto:
+        if self.product_id.product_tmpl_id._pack_priced_as_plain_product():
             return
         return super().expand_pack_line(write=write)

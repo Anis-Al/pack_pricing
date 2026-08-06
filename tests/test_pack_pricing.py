@@ -22,6 +22,7 @@ class TestPackPricing(TransactionCase):
                 "pack_type": "detailed",
                 "pack_component_price": "ignored",
                 "pack_price_auto": True,
+                "discount": True,
             }
         )
         cls.env["product.pack.line"].create(
@@ -57,6 +58,10 @@ class TestPackPricing(TransactionCase):
     def test_discount_creates_pricelist_item(self):
         self.template.pack_discount = 10.0
         self.assertEqual(self.template.pack_price_final, 630.0)
+        self.assertEqual(self.template.pack_margin_after_discount, 280.0)
+        self.assertAlmostEqual(
+            self.template.pack_margin_percent_after_discount, 44.44, places=2
+        )
         item = self.env["product.pricelist.item"].search(
             [
                 ("pricelist_id", "=", self.packs_pricelist.id),
@@ -96,7 +101,22 @@ class TestPackPricing(TransactionCase):
         )
         self.assertEqual(empty_pack.list_price, 500.0)
 
-    def test_disabling_auto_pricing_removes_item(self):
+    def test_disabling_discount_removes_item(self):
+        self.template.pack_discount = 10.0
+        item = self.env["product.pricelist.item"].search(
+            [
+                ("pricelist_id", "=", self.packs_pricelist.id),
+                ("product_tmpl_id", "=", self.template.id),
+            ]
+        )
+        self.assertTrue(item)
+        self.template.discount = False
+        self.assertEqual(self.template.pack_discount, 0.0)
+        self.assertEqual(self.template.pack_price_final, 700.0)
+        self.assertFalse(item.exists())
+
+    def test_auto_pricing_does_not_drive_the_discount(self):
+        """``discount`` is the only switch for the pricelist item."""
         self.template.pack_discount = 10.0
         item = self.env["product.pricelist.item"].search(
             [
@@ -106,7 +126,65 @@ class TestPackPricing(TransactionCase):
         )
         self.assertTrue(item)
         self.template.pack_price_auto = False
-        self.assertFalse(item.exists())
+        self.assertTrue(item.exists())
+        self.assertEqual(item.percent_price, 10.0)
+
+    def test_discount_base_without_auto_pricing_is_list_price(self):
+        self.template.pack_discount = 10.0
+        self.assertEqual(self.template.pack_price_before_discount, 700.0)
+        self.template.pack_price_auto = False
+        self.template.list_price = 800.0
+        self.assertEqual(self.template.pack_price_before_discount, 800.0)
+        self.assertEqual(self.template.pack_price_final, 720.0)
+        # The roll-up is untouched: only the discount base moved.
+        self.assertEqual(self.template.pack_total_sale, 700.0)
+
+    def test_discount_applies_without_auto_pricing(self):
+        """What the tab shows is what the customer pays, auto pricing or not."""
+        self.template.pack_price_auto = False
+        self.template.pack_discount = 10.0
+        self.template.list_price = 800.0
+        self.assertFalse(self.template._is_pack_to_be_handled())
+        self.assertEqual(
+            self.packs_pricelist._get_product_price(self.pack, 1.0), 720.0
+        )
+        order = self.env["sale.order"].create(
+            {
+                "partner_id": self.env["res.partner"].create({"name": "Buyer"}).id,
+                "pricelist_id": self.packs_pricelist.id,
+                "order_line": [(0, 0, {"product_id": self.pack.id, "product_uom_qty": 1})],
+            }
+        )
+        self.assertEqual(len(order.order_line), 1)
+        self.assertEqual(order.order_line.price_unit, 720.0)
+
+    def test_hand_typed_price_wins_with_both_switches_off(self):
+        """`pack_type` is hidden, so nothing may re-sum the components."""
+        self.template.pack_price_auto = False
+        self.template.discount = False
+        self.template.list_price = 2000.0
+        self.assertFalse(self.template._is_pack_to_be_handled())
+        # The shop's public price and the pricelist price both honour it.
+        self.assertEqual(self.pack.lst_price, 2000.0)
+        self.assertEqual(
+            self.packs_pricelist._get_product_price(self.pack, 1.0), 2000.0
+        )
+        order = self.env["sale.order"].create(
+            {
+                "partner_id": self.env["res.partner"].create({"name": "Buyer"}).id,
+                "order_line": [(0, 0, {"product_id": self.pack.id, "product_uom_qty": 1})],
+            }
+        )
+        self.assertEqual(len(order.order_line), 1)
+        self.assertEqual(order.order_line.price_unit, 2000.0)
+
+    def test_discount_off_ignores_a_stale_percentage(self):
+        self.template.pack_discount = 10.0
+        self.template.discount = False
+        # Data written straight onto the field, bypassing the form.
+        self.template.with_context(pack_price_sync=True).pack_discount = 10.0
+        self.assertEqual(self.template.pack_price_final, 700.0)
+        self.assertEqual(self.template._pack_effective_discount(), 0.0)
 
     def test_disabling_pack_ok_removes_item(self):
         self.template.pack_discount = 10.0

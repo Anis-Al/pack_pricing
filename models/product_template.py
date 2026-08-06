@@ -6,6 +6,9 @@ from odoo.exceptions import ValidationError
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
+    # Packs are always sold as one line here, so the display type is noise:
+    # default it and hide it in the view.
+    pack_type = fields.Selection(default="non_detailed")
     pack_price_auto = fields.Boolean(
         "Auto Pack Pricing",
         help="Compute this pack's cost and sales price from its components, "
@@ -37,10 +40,26 @@ class ProductTemplate(models.Model):
         digits="Product Price",
         help="Margin left once the pack discount is applied.",
     )
+    pack_margin_percent_after_discount = fields.Float(
+        compute="_compute_pack_totals",
+        string="Margin After Discount (%)",
+    )
+    discount = fields.Boolean(
+        "Apply Pack Discount",
+        help="Publish a discount for this pack in the Packs pricelist. "
+        "Unticking it clears the discount and removes the pricelist item.",
+    )
     pack_discount = fields.Float(
         "Pack Discount (%)",
         digits="Discount",
         help="Discount published as a pricelist item in the Packs pricelist.",
+    )
+    pack_price_before_discount = fields.Float(
+        compute="_compute_pack_totals",
+        string="Price Before Discount",
+        digits="Product Price",
+        help="What the pack discount is taken off: the component roll-up when "
+        "auto pricing is on, the product's own sales price when it is off.",
     )
     pack_price_final = fields.Float(
         compute="_compute_pack_totals",
@@ -52,6 +71,9 @@ class ProductTemplate(models.Model):
         "pack_line_ids.subtotal_cost",
         "pack_line_ids.subtotal_sale",
         "pack_discount",
+        "discount",
+        "pack_price_auto",
+        "list_price",
     )
     def _compute_pack_totals(self):
         for tmpl in self:
@@ -63,16 +85,35 @@ class ProductTemplate(models.Model):
                 if tmpl.pack_total_sale
                 else 0.0
             )
-            tmpl.pack_price_final = tmpl.pack_total_sale * (
-                1 - tmpl.pack_discount / 100.0
+            # Without auto pricing nothing rolls the components up into
+            # list_price, so the roll-up is not what gets discounted: the
+            # product's own sales price is.
+            tmpl.pack_price_before_discount = (
+                tmpl.pack_total_sale if tmpl.pack_price_auto else tmpl.list_price
+            )
+            # A stored pack_discount with the switch off is dead data (import,
+            # or a discount someone turned off): the tab must not show it.
+            discount = tmpl.pack_discount if tmpl.discount else 0.0
+            tmpl.pack_price_final = tmpl.pack_price_before_discount * (
+                1 - discount / 100.0
             )
             tmpl.pack_margin_after_discount = (
                 tmpl.pack_price_final - tmpl.pack_total_cost
+            )
+            tmpl.pack_margin_percent_after_discount = (
+                tmpl.pack_margin_after_discount / tmpl.pack_price_final * 100.0
+                if tmpl.pack_price_final
+                else 0.0
             )
 
     @api.onchange("pack_ok")
     def _onchange_pack_ok(self):
         self.pack_price_auto = self.pack_ok
+
+    @api.onchange("discount")
+    def _onchange_discount(self):
+        if not self.discount:
+            self.pack_discount = 0.0
 
     @api.constrains("pack_price_auto", "pack_ok")
     def _check_pack_price_auto(self):
@@ -82,19 +123,43 @@ class ProductTemplate(models.Model):
                     self.env._("Auto Pack Pricing only applies to pack products.")
                 )
 
+    def _pack_priced_as_plain_product(self):
+        """A pack's own ``list_price`` is its price. Components add nothing.
+
+        True for **every** pack, not just an auto priced one. ``pack_type`` is
+        defaulted to ``non_detailed`` and hidden by this module, and that is the
+        value on which OCA zeroes the pack's own price and re-sums the
+        components — on the pricelist path
+        (``product_pack/models/product_pricelist.py:14``) *and* on ``lst_price``
+        (``product_pack/models/product_product.py:37``). With the field hidden
+        there is no longer a setting a user could pick to escape that, so a
+        hand-typed sales price would be silently ignored everywhere.
+
+        The two switches are therefore purely additive on top of this:
+        ``pack_price_auto`` fills ``list_price`` in from the components,
+        ``discount`` publishes a percentage off it. Neither decides *whether*
+        the pack's own price counts.
+
+        Single source of truth: ``_is_pack_to_be_handled`` and
+        ``sale.order.line.expand_pack_line`` must agree, or the order gets the
+        pack's full price *and* a line per component.
+        """
+        self.ensure_one()
+        return self.pack_ok
+
     def _is_pack_to_be_handled(self):
-        """Auto priced packs are priced like a plain product.
+        """Packs we price ourselves are priced like a plain product.
 
         ``product_pack`` otherwise forces the pack's own price to 0 and rebuilds
         it from the components on every price request, which discards both the
-        price we roll up into ``list_price`` and any pricelist item set on the
-        pack (see ``product_pack/models/product_pricelist.py``). Since the pack
-        already carries the whole amount, and its components are never expanded
-        into the order, that second roll-up has to stay out of the way whatever
-        the Pack Display Type is.
+        price in ``list_price`` and any pricelist item set on the pack (see
+        ``product_pack/models/product_pricelist.py:14``). Since the pack already
+        carries the whole amount, and its components are never expanded into the
+        order, that second roll-up has to stay out of the way whatever the Pack
+        Display Type is.
         """
         self.ensure_one()
-        if self.pack_price_auto:
+        if self._pack_priced_as_plain_product():
             return False
         return super()._is_pack_to_be_handled()
 
@@ -110,7 +175,11 @@ class ProductTemplate(models.Model):
                 )
 
     def _sync_pack_prices(self):
-        """Push the component roll-up onto the pack product and its pricelist item."""
+        """Push the component roll-up onto the pack product.
+
+        The pricelist item is *not* synced here: it hangs off ``discount``,
+        which no longer follows ``pack_price_auto``. See ``write`` / ``create``.
+        """
         if self.env.context.get("pack_price_sync"):
             return
 
@@ -127,14 +196,18 @@ class ProductTemplate(models.Model):
                 vals["standard_price"] = tmpl.pack_total_cost
             if vals:
                 tmpl.write(vals)
-            tmpl._sync_pack_pricelist_item()
         # ponytail: a pack used inside another auto pack is not cascaded, one
         # level is enough here. Reopen and save the outer pack to refresh it.
 
     def _pack_effective_discount(self):
-        """Discount actually published, 0 for anything that is not an auto pack."""
+        """Discount actually published, 0 unless the pack asked for one.
+
+        Deliberately independent of ``pack_price_auto``: the switch is
+        ``discount``, so a pack can carry a pricelist discount without having
+        its prices rolled up from its components.
+        """
         self.ensure_one()
-        return self.pack_discount if self.pack_ok and self.pack_price_auto else 0.0
+        return self.pack_discount if self.pack_ok and self.discount else 0.0
 
     def _sync_pack_pricelist_item(self):
         pricelist = self.env.ref(
@@ -174,6 +247,9 @@ class ProductTemplate(models.Model):
     def create(self, vals_list):
         templates = super().create(vals_list)
         templates._sync_pack_prices()
+        # Only packs can ever own an item, and product creation is hot enough
+        # that one search per plain product is worth skipping.
+        templates.filtered("pack_ok")._sync_pack_pricelist_item()
         return templates
 
     def write(self, vals):
@@ -181,12 +257,15 @@ class ProductTemplate(models.Model):
             # Unticking "Is a Pack" leaves nothing to roll up: drop auto pricing
             # with it instead of failing the constraint and rolling the save back.
             vals = dict(vals, pack_price_auto=False)
+        if vals.get("discount") is False:
+            # The switch is off: clear the percentage it controls so nothing
+            # stale is left behind to reappear when it is turned back on.
+            vals = dict(vals, pack_discount=0.0)
         res = super().write(vals)
         if self.env.context.get("pack_price_sync"):
             return res
-        if {"pack_ok", "pack_price_auto"} & vals.keys():
-            # Auto pricing (or the pack flag itself) was just switched off:
-            # drop the pricelist item that nothing displays anymore.
+        if {"pack_ok", "discount", "pack_discount"} & vals.keys():
+            # Anything the published percentage is derived from just moved.
             self._sync_pack_pricelist_item()
         self._sync_pack_prices()
         if {"list_price", "standard_price"} & vals.keys():
