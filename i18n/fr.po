@@ -188,9 +188,7 @@ msgstr "Ligne de pack d'articles"
 msgid ""
 "Publish a discount for this pack in the Packs pricelist. Unticking it clears "
 "the discount and removes the pricelist item."
-msgstr ""
-"Publier une remise pour ce pack dans la liste de prix Packs. La décocher "
-"remet la remise à zéro et supprime la règle de liste de prix."
+msgstr "Publier une remise pour ce pack dans la liste de prix Packs."
 
 #. module: pack_pricing
 #: model:ir.model.fields,field_description:pack_pricing.field_product_pack_line__sale_price
