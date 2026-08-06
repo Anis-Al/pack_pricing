@@ -11,6 +11,11 @@ Three things, all gated behind one opt-in flag `pack_price_auto` on `product.tem
 
 Flag off = OCA behaviour, untouched.
 
+The flag tracks `pack_ok` in the form (`_onchange_pack_ok`): ticking "Is a Pack" turns auto
+pricing on, unticking turns it off. No stored `default=True` — that would sit on every
+non-pack product and trip `_check_pack_price_auto`. Packs created by import or data files
+get no onchange, so they stay off.
+
 ## The rule everything depends on
 
 `product_pack` hijacks pricing when `_is_pack_to_be_handled()` is True

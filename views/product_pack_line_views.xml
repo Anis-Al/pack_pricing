@@ -10,8 +10,8 @@
                 <field name="sale_price" />
                 <field name="subtotal_cost" sum="Cost" />
                 <field name="subtotal_sale" sum="Sales Price" />
-                <field name="margin" sum="Margin" />
-                <field name="margin_percent" optional="show" />
+                <field name="margin" sum="Margin" optional="hide" />
+                <field name="margin_percent" optional="hide" />
             </field>
         </field>
     </record>

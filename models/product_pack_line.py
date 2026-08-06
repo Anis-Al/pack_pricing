@@ -9,11 +9,13 @@ class ProductPackLine(models.Model):
         related="product_id.standard_price",
         string="Cost",
         digits="Product Price",
+        help="Unit cost of this component.",
     )
     sale_price = fields.Float(
         related="product_id.lst_price",
         string="Sale Price",
         digits="Product Price",
+        help="Unit sales price of this component.",
     )
     subtotal_cost = fields.Float(
         compute="_compute_subtotals",

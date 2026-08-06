@@ -53,10 +53,7 @@ msgid ""
 "Compute this pack's cost and sales price from its components, publish its "
 "discount in the Packs pricelist, and sell it as a single order line "
 "(components are never added to the order)."
-msgstr ""
-"Calculer le coût et le prix de vente de ce pack à partir de ses composants, "
-"publier sa remise dans la liste de prix Packs, et le vendre sur une seule "
-"ligne de commande (les composants ne sont jamais ajoutés à la commande)."
+msgstr "Calculer le coût et le prix de vente de ce pack à partir de ses composants"
 
 #. module: pack_pricing
 #: model:ir.model.fields,field_description:pack_pricing.field_product_pack_line__cost_price
@@ -196,21 +193,10 @@ msgstr "La remise du pack doit être comprise entre 0% (inclus) et 100% (exclu).
 
 #. module: pack_pricing
 #: model:ir.model.fields,help:pack_pricing.field_product_pack_line__sale_price
-msgid ""
-"The sale price is managed from the product template. Click on the 'Configure"
-" Variants' button to set the extra attribute prices."
-msgstr ""
-"Le prix de vente est géré depuis le modèle d'article. Cliquez sur le bouton "
-"'Configurer les variantes' pour définir les prix supplémentaires des "
-"attributs."
+msgid "Unit sales price of this component."
+msgstr "Prix de vente unitaire de ce composant."
 
 #. module: pack_pricing
 #: model:ir.model.fields,help:pack_pricing.field_product_pack_line__cost_price
-msgid ""
-"Value of the product (automatically computed in AVCO).\n"
-"        Used to value the product when the purchase cost is not known (e.g. inventory adjustment).\n"
-"        Used to compute margins on sale orders."
-msgstr ""
-"Valeur de l'article (calculée automatiquement en CMP).\n"
-"        Utilisée pour valoriser l'article lorsque le coût d'achat n'est pas connu (par ex. ajustement d'inventaire).\n"
-"        Utilisée pour calculer les marges sur les commandes de vente."
+msgid "Unit cost of this component."
+msgstr "Coût unitaire de ce composant."

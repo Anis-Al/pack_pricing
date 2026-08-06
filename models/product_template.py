@@ -70,6 +70,10 @@ class ProductTemplate(models.Model):
                 tmpl.pack_price_final - tmpl.pack_total_cost
             )
 
+    @api.onchange("pack_ok")
+    def _onchange_pack_ok(self):
+        self.pack_price_auto = self.pack_ok
+
     @api.constrains("pack_price_auto", "pack_ok")
     def _check_pack_price_auto(self):
         for tmpl in self.filtered("pack_price_auto"):
@@ -109,8 +113,7 @@ class ProductTemplate(models.Model):
         """Push the component roll-up onto the pack product and its pricelist item."""
         if self.env.context.get("pack_price_sync"):
             return
-        # A pack without components has nothing to roll up: leave the manually
-        # entered prices alone instead of zeroing them.
+
         packs = self.filtered(
             lambda t: t.pack_ok and t.pack_price_auto and t.pack_line_ids
         )
